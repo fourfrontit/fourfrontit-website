@@ -1,0 +1,8 @@
+{
+  "name": "FourFront IT MSP Solutions",
+  "description": "A comprehensive web application for FourFront IT, showcasing a suite of AI-powered tools including a real-time voice assistant, grounded search, a chatbot, advanced analysis, and image generation to demonstrate cutting-edge MSP capabilities.",
+  "requestFramePermissions": [
+    "microphone",
+    "geolocation"
+  ]
+}

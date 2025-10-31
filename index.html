@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FourFront IT | AI-Powered MSP Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom scrollbar for better aesthetics */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1e293b; /* slate-800 */
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #475569; /* slate-600 */
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #64748b; /* slate-500 */
+      }
+      
+      /* Glowing focus effect for inputs */
+      .form-input-glow:focus {
+        box-shadow: 0 0 0 2px #1e293b, 0 0 0 4px #38bdf8; /* bg-slate-800, sky-400 */
+      }
+
+      /* --- Animation Keyframes --- */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      @keyframes slideInDown {
+          from {
+              opacity: 0;
+              transform: translateY(-20px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes pulse {
+        0%, 100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        }
+        50% {
+          transform: scale(1.05);
+          box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+        }
+      }
+      
+      @keyframes gentle-pulse {
+          0%, 100% { transform: scale(1); opacity: 0.7; }
+          50% { transform: scale(1.05); opacity: 1; }
+      }
+
+      @keyframes shimmer {
+        0% { background-position: -1000px 0; }
+        100% { background-position: 1000px 0; }
+      }
+      
+      @keyframes shimmer-reveal {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+
+
+      /* --- Animation Utility Classes --- */
+      .animate-fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+      }
+
+      .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out forwards;
+      }
+      
+      .animate-slide-in-down {
+          animation: slideInDown 0.5s ease-out forwards;
+      }
+
+      .animate-slide-in-left {
+        animation: slideInLeft 0.6s ease-out forwards;
+      }
+
+      .animate-slide-in-right {
+        animation: slideInRight 0.6s ease-out forwards;
+      }
+
+      .animate-pulse-live {
+        animation: pulse 2s infinite;
+      }
+      
+      .animate-gentle-pulse {
+        animation: gentle-pulse 2.5s infinite ease-in-out;
+      }
+
+      .text-shimmer {
+        background: linear-gradient(to right, #67e8f9 20%, #a78bfa 40%, #a78bfa 60%, #67e8f9 80%);
+        background-size: 200% auto;
+        color: transparent;
+        background-clip: text;
+        -webkit-background-clip: text;
+        animation: shimmer 5s linear infinite;
+      }
+      
+      .image-shimmer-reveal {
+        position: relative;
+        overflow: hidden;
+      }
+      .image-shimmer-reveal::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+        animation: shimmer-reveal 1.5s ease-out;
+      }
+
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+      }
+
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.26.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-gray-900 text-white">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
