@@ -1,4 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+declare global {
+  interface Window {
+    grecaptcha: any;
+  }
+}
 
 const EstimateFormSection: React.FC = () => {
     const [name, setName] = useState('');
@@ -7,6 +13,27 @@ const EstimateFormSection: React.FC = () => {
     const [message, setMessage] = useState('');
     const [copyStatus, setCopyStatus] = useState('Copy email');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [recaptchaReady, setRecaptchaReady] = useState(false);
+
+    // Load reCAPTCHA script
+    useEffect(() => {
+        const loadRecaptcha = () => {
+            const script = document.createElement('script');
+            script.src = 'https://www.google.com/recaptcha/api.js?render=6LfxaAgsAAAAAJTKIPVyxWudrVLEpBHsOi0DD2oy';
+            script.async = true;
+            script.defer = true;
+            script.onload = () => {
+                setRecaptchaReady(true);
+            };
+            document.head.appendChild(script);
+        };
+
+        if (!window.grecaptcha) {
+            loadRecaptcha();
+        } else {
+            setRecaptchaReady(true);
+        }
+    }, []);
 
     const handleCopyEmail = () => {
         navigator.clipboard.writeText('info@fourfrontit.com');
@@ -14,23 +41,62 @@ const EstimateFormSection: React.FC = () => {
         setTimeout(() => setCopyStatus('Copy email'), 2000);
     };
 
+    const getRecaptchaToken = async (): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            if (!window.grecaptcha) {
+                reject(new Error('reCAPTCHA not loaded'));
+                return;
+            }
+
+            window.grecaptcha.ready(() => {
+                window.grecaptcha.execute('6LfxaAgsAAAAAJTKIPVyxWudrVLEpBHsOi0DD2oy', { action: 'submit' })
+                    .then((token: string) => {
+                        resolve(token);
+                    })
+                    .catch((error: any) => {
+                        reject(error);
+                    });
+            });
+        });
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
 
         try {
+            // Get reCAPTCHA token
+            let recaptchaToken = '';
+            if (recaptchaReady) {
+                try {
+                    recaptchaToken = await getRecaptchaToken();
+                    console.log('reCAPTCHA token obtained:', recaptchaToken);
+                } catch (error) {
+                    console.warn('reCAPTCHA failed, proceeding without it:', error);
+                }
+            }
+
+            const formData: any = {
+                name: name,
+                email: email,
+                phone: phone,
+                message: message,
+                _subject: `New Contact Form Submission from ${name}`
+            };
+
+            // Add reCAPTCHA token if available
+            if (recaptchaToken) {
+                formData['g-recaptcha-response'] = recaptchaToken;
+            }
+
+            console.log('Submitting form data:', formData);
+
             const response = await fetch('https://formspree.io/f/mnnlqqqb', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    name: name,
-                    email: email,
-                    phone: phone,
-                    message: message,
-                    _subject: `New Contact Form Submission from ${name}`
-                }),
+                body: JSON.stringify(formData),
             });
 
             if (response.ok) {
@@ -40,9 +106,12 @@ const EstimateFormSection: React.FC = () => {
                 setPhone('');
                 setMessage('');
             } else {
+                const errorData = await response.text();
+                console.error('Form submission failed:', errorData);
                 throw new Error('Form submission failed');
             }
         } catch (error) {
+            console.error('Form submission error:', error);
             alert('Sorry, there was an error sending your message. Please try again later.');
         } finally {
             setIsSubmitting(false);
@@ -86,6 +155,14 @@ const EstimateFormSection: React.FC = () => {
                             rows={4}
                             className="w-full bg-slate-800/60 border border-slate-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none transition-shadow resize-none form-input-glow"
                         ></textarea>
+                        
+                        {/* reCAPTCHA Badge - This will be automatically added by Google */}
+                        <div className="text-xs text-slate-400 text-center">
+                            This site is protected by reCAPTCHA and the Google 
+                            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline mx-1">Privacy Policy</a> and
+                            <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline mx-1">Terms of Service</a> apply.
+                        </div>
+
                         <div className="flex flex-wrap items-center gap-4 mt-2">
                             <button
                                 type="submit"
