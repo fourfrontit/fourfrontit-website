@@ -5,6 +5,7 @@ const EstimateFormSection: React.FC = () => {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
     const [copyStatus, setCopyStatus] = useState('Copy email');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleCopyEmail = () => {
         navigator.clipboard.writeText('info@fourfrontit.com');
@@ -12,13 +13,37 @@ const EstimateFormSection: React.FC = () => {
         setTimeout(() => setCopyStatus('Copy email'), 2000);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Placeholder for form submission logic
-        alert('Thank you for your message! We will get back to you shortly.');
-        setName('');
-        setEmail('');
-        setMessage('');
+        setIsSubmitting(true);
+
+        try {
+            const response = await fetch('https://formspree.io/f/mnnlqqqb', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    message: message,
+                    _subject: `New Contact Form Submission from ${name}`
+                }),
+            });
+
+            if (response.ok) {
+                alert('Thank you for your message! We will get back to you shortly.');
+                setName('');
+                setEmail('');
+                setMessage('');
+            } else {
+                throw new Error('Form submission failed');
+            }
+        } catch (error) {
+            alert('Sorry, there was an error sending your message. Please try again later.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -52,13 +77,14 @@ const EstimateFormSection: React.FC = () => {
                             className="w-full bg-slate-800/60 border border-slate-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none transition-shadow resize-none form-input-glow"
                         ></textarea>
                         <div className="flex flex-wrap items-center gap-4 mt-2">
-                             <button
+                            <button
                                 type="submit"
-                                className="inline-block bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold px-6 py-3 rounded-lg hover:opacity-90 transition-opacity duration-300 transform hover:scale-105 shadow-lg"
+                                disabled={isSubmitting}
+                                className="inline-block bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold px-6 py-3 rounded-lg hover:opacity-90 transition-opacity duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                Send message
+                                {isSubmitting ? 'Sending...' : 'Send message'}
                             </button>
-                             <button
+                            <button
                                 type="button"
                                 onClick={handleCopyEmail}
                                 className="border border-slate-600 text-slate-300 font-semibold px-6 py-3 rounded-lg hover:bg-slate-700 hover:border-slate-500 transition-colors duration-300"
