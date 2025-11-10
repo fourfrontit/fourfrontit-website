@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const EstimateFormSection: React.FC = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
     const [message, setMessage] = useState('');
     const [copyStatus, setCopyStatus] = useState('Copy email');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,6 +27,7 @@ const EstimateFormSection: React.FC = () => {
                 body: JSON.stringify({
                     name: name,
                     email: email,
+                    phone: phone,
                     message: message,
                     _subject: `New Contact Form Submission from ${name}`
                 }),
@@ -35,6 +37,7 @@ const EstimateFormSection: React.FC = () => {
                 alert('Thank you for your message! We will get back to you shortly.');
                 setName('');
                 setEmail('');
+                setPhone('');
                 setMessage('');
             } else {
                 throw new Error('Form submission failed');
@@ -66,6 +69,13 @@ const EstimateFormSection: React.FC = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
+                            className="w-full bg-slate-800/60 border border-slate-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none transition-shadow form-input-glow"
+                        />
+                        <input
+                            type="tel"
+                            placeholder="Phone Number"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
                             className="w-full bg-slate-800/60 border border-slate-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none transition-shadow form-input-glow"
                         />
                         <textarea
